@@ -43,6 +43,10 @@ abstract class AbstractController{
         }
     }
 
+    public function redirectTo(string $route){
+        
+    }
+
     /**
      * On laisse vide. Si besoin, on utilisera la surcharge de méthodes
      */

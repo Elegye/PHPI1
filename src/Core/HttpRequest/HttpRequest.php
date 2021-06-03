@@ -33,6 +33,14 @@ class HttpRequest{
         throw new NotFoundHttpException();
     }
 
+    public function redirectTo(string $target){
+        foreach($this->routes as $route){
+            if($route['name'] == $target){
+                return $this->getControllerMethod($route['controller'], $route['action']);
+            }
+        }
+    }
+
     /**
      * A ajouter : gestion de la sécurité
      */
