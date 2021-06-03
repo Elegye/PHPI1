@@ -1,0 +1,14 @@
+{
+    "name": "halope/phpi1",
+    "type": "project",
+    "authors": [
+        {
+            "name": "Halope Alexandre",
+            "email": "alexandrehalope@yahoo.fr"
+        }
+    ],
+    "require": {},
+    "autoload": {
+        "psr-4": {"App\\": "src/"}
+    }
+}
