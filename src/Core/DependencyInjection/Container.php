@@ -5,6 +5,7 @@ namespace App\Core\DependencyInjection;
 use App\Core\HttpResponse\HttpResponse;
 use App\Core\HttpRequest\HttpRequest;
 use App\Core\Template\Template;
+use App\Core\ParameterBag\ParameterBag;
 
 class Container{
 
@@ -18,6 +19,9 @@ class Container{
                 break;
             case 'template':
                 return $this->getTemplate();
+                break;
+            case 'param':
+                return $this->getParameterBag();
                 break;
         }
 
@@ -34,6 +38,10 @@ class Container{
 
     public function getTemplate(){
         return Template::class;
+    }
+
+    public function getParameterBag(){
+        return new ParameterBag($_SERVER['config']);
     }
 
 }

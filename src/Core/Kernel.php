@@ -12,16 +12,18 @@ class Kernel{
     public $container;
 
     public function __construct(array $routes){
-        $this->request = new HttpRequest($_GET, $_POST, $routes);
+        $this->request = new HttpRequest($_GET, $_POST, $_SESSION, $_SERVER, $routes);
         $this->response = new HttpResponse();
     }
 
-    public function start(){
-        
+    public function start()
+    {
         try {
-            $this->request->toController();
+            $this->response = $this->request->toController();
         } catch (NotFoundHttpException $e) {
-            return $this->response->toHttpError(404);
+            $this->response->toHttpError(404);
         }
+
+        return $this->response->send();
     }
 }

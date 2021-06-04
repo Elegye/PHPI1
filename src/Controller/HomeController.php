@@ -9,11 +9,15 @@ class HomeController extends AbstractController{
     protected static $templateDir = "home";
 
     public function index(){
+        
         $userRepository = new UserRepository();
-        $userRepository->findAll();
+
+        if($this->isSended() && $this->isValid()){
+            echo "La requête est valide";
+        }
+        
         return $this->render('index', [
-            'say' => $this->request->params->getPost('say'),
-            'to' => $this->request->params->getPost('to')
+            'users' => $userRepository->findAll()
         ]);
 
     }

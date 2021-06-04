@@ -1,15 +1,12 @@
-<VirtualHost>
+<VirtualHost *:8000>
 
-    DocumentRoot /public/index.php
+    DocumentRoot ./public
+    DirectoryIndex /index.php
 
-    RewriteEngine On
-
-    RewriteCond %{REQUEST_FILENAME}  -f [OR]
+    RewriteEngine on
     RewriteCond %{REQUEST_FILENAME} !-f
-    RewriteRule ^(.*)$ /public/index.php [L,QSA]
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^(.*)$ ./public/index.php?route=$1 [NC,L,QSA]
 
-    # optionally set the value of the environment variables used in the application
-    #SetEnv APP_ENV prod
-    #SetEnv APP_SECRET <app-secret-id>
-    #SetEnv DATABASE_URL "mysql://db_user:db_pass@host:3306/db_name"
+    
 </VirtualHost>

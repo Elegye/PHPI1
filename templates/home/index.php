@@ -7,6 +7,7 @@
     <title>Accueil</title>
 </head>
 <body>
+<?php var_dump($users); ?>
     <form method="post">
         <div>
             <label for="login">Login</label>

@@ -2,19 +2,45 @@
 
 namespace App\Core\HttpRequest;
 
-use App\Core\HttpRequest\HttpRequestParameterBag;
+use App\Core\HttpResponse\HttpResponse;
+use App\Core\ParameterBag\ParameterBag;
 use App\Core\Exception\NotFoundHttpException;
 
-class HttpRequest{
-
+class HttpRequest
+{
+    /**
+     * All routes we can match
+     */
     private $routes;
-    private $route;
-    public $params;
 
-    public function __construct(array $query, array $post, array $routes = [])
+    /**
+     * Route we want to match
+     */
+    private $route;
+    
+    /**
+     * GET Params
+     */
+    public $query;
+
+    /**
+     * POST Params
+     */
+    public $request;
+
+    /**
+     * SESSIONS Params
+     */
+    public $session;
+
+    public function __construct(array $query = [], array $request = [], array $session = [], array $server = [], array $routes = [])
     {
-        $this->params = new HttpRequestParameterBag($query, $post);
-        $this->route = $this->params->getQuery('route');
+        $this->query = new ParameterBag($query);
+        $this->request = new ParameterBag($request);
+        $this->session = new ParameterBag($session);
+        $this->server = new ParameterBag($server);
+        
+        $this->route = trim($this->server->get('REQUEST_URI'), '/'); // Trivial, mais fonctionnel !
         $this->routes = $routes;
     }
 
@@ -29,7 +55,6 @@ class HttpRequest{
                 return $this->getControllerMethod($route['controller'], $route['action']);
             }
         }
-        
         throw new NotFoundHttpException();
     }
 
@@ -44,11 +69,8 @@ class HttpRequest{
     /**
      * A ajouter : gestion de la sécurité
      */
-    private function getControllerMethod(string $controller, string $method, bool $is_secure = False)
+    private function getControllerMethod(string $controller, string $method, array $params = null, bool $is_secure = False): HttpResponse
     {
-        $controller = (new $controller);
-        $controller->beforeFilter();
-        $controller->$method();
-        $controller->afterFilter();
+        return (new $controller)->$method();
     }
 }

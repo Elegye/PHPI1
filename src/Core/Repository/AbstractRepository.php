@@ -7,6 +7,8 @@ abstract class AbstractRepository{
 
     private $container;
 
+    private $params;
+
     private $repository;
 
     private $table;
@@ -15,10 +17,16 @@ abstract class AbstractRepository{
  
     public function __construct(){
         $this->container = new Container();
+        $this->params = $this->container->get('param');
         $this->repository = get_called_class();
         $this->table = "projet.".$this->repository::$table;
 
-        $this->conn = new \mysqli("192.168.56.80", "gpi2", "network", "projet");
+        $this->conn = new \mysqli(
+            $this->params->get('DATABASE_URL'),
+            $this->params->get('DATABASE_USER'),
+            $this->params->get('DATABASE_PASSWD'),
+            $this->params->get('DATABASE_DATABASE')
+        );
         if($this->conn->connect_error) {
             exit("Impossible de se connecter à la base de données");
         }
@@ -32,18 +40,17 @@ abstract class AbstractRepository{
 
     public function findAll()
     {
-        $resulat = [];
-        $result = $connexion->query("SELECT * FROM ".$this->table);
+        $resulats = [];
+        $result = $this->conn->query("SELECT * FROM ".$this->table);
         if(!$result) {
-            echo "la requête ne s’est pas exécutée"; 
+            throw new \Exception('Requête impossible');
         } else {
-            echo "la requête s’est bien passée"; 
-            $resultat = $result->fetch_assoc();
+            $resultats = $result->fetch_assoc();
             $result->free();
         }
-        $connexion->close();
+        $this->conn->close();
 
-        return $resultat;
+        return $resultats;
     }
 
 }
